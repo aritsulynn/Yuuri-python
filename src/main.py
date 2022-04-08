@@ -27,7 +27,7 @@ async def on_ready():
 
 for fn in os.listdir("./src/cogs"):
 # for fn in os.listdir("./cogs"): # ubuntu
-    if fn.endswith(".py") and not fn.startswith("myFunction"):
+    if fn.endswith(".py"):
         client.load_extension(f"cogs.{fn[:-3]}")
         print("Load :" + fn)
 
