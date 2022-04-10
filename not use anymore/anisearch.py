@@ -2,6 +2,7 @@ from selenium import webdriver
 import time
 import bs4
 import nextcord
+import pandas as pd
 # from selenium.webdriver.chrome.options import Options
 
 
@@ -96,7 +97,7 @@ def ani_search(username: str, typeData: str, mode: str):
     msg = ''
     soup = driver(username, typeData, mode)
     title = findTitle(soup)
-    # score = findScore(soup)
+    score = findScore(soup)
     name = findName(soup)
     progress = findProgress(soup)
     for i in range(len(title)):
@@ -108,6 +109,11 @@ def ani_search(username: str, typeData: str, mode: str):
             msg += f'[`{progress[i]}`]{title[i]} ....'
             break
 
+
+    table = pd.DataFrame([title, score, progress]).transpose()
+    table.columns = ['Title', 'Score', 'Progress']
+    table.to_csv('animelist.csv', index=False)
+    
     em = nextcord.Embed(
         title=f'**{name}** : `{len(title)}` entries found.', description=msg)
     return em

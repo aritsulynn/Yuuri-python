@@ -62,18 +62,26 @@ class slashAnilist(commands.Cog):
     @manga.subcommand(name="completed", description="Search for completed manga")
     async def manga_completed(self, interaction: Interaction, *, username : str):
         await interaction.response.defer(with_message=True,ephemeral=True)
-        await interaction.followup.send(embed = ani.ani_search(username, "manga", "completed"))
+        try:
+            await interaction.followup.send(embed = ani.ani_search(username, "manga", "completed"))
+        except:
+            await interaction.followup.send("No completed manga found")
     
     @manga.subcommand(name="paused", description="Search for a manga you have on hold")
     async def manga_paused(self, interaction: Interaction, *, username : str):
         await interaction.response.defer(with_message=True,ephemeral=True)
-        await interaction.followup.send(embed = ani.ani_search(username, "manga", "paused"))
+        try:
+            await interaction.followup.send(embed = ani.ani_search(username, "manga", "paused"))
+        except:
+            await interaction.followup.send("No manga on hold found")
     
     @manga.subcommand(name="planning", description="Search for a manga you have planning")
     async def manga_planning(self, interaction: Interaction, *, username : str):
         await interaction.response.defer(with_message=True,ephemeral=True)
-        await interaction.followup.send(embed = ani.ani_search(username, "manga", "planning"))
-
+        try:
+            await interaction.followup.send(embed = ani.ani_search(username, "manga", "planning"))
+        except:
+            await interaction.followup.send("No manga found")
 
 def setup(bot):
     bot.add_cog(slashAnilist(bot))
