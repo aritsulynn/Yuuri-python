@@ -12,19 +12,19 @@ class slashAnipi(commands.Cog):
 
     @nextcord.slash_command(name="anime", description="Get anime info from AniList")
     async def anilist(self, interaction: Interaction, *, anime : str):
-        await interaction.response.defer(with_message=True,ephemeral=True)
+        await interaction.response.defer(with_message=True,ephemeral=False)
         await interaction.followup.send(embed = ap.get_anime(anime))
 
 
     @nextcord.slash_command(name="manga", description="Get manga info from AniList")
     async def manga(self, interaction: Interaction, *, manga : str):
-        await interaction.response.defer(with_message=True,ephemeral=True)
+        await interaction.response.defer(with_message=True,ephemeral=False)
         await interaction.followup.send(embed = ap.get_manga(manga))
 
 
     @nextcord.slash_command(name="user", description="Get user info from AniList")
     async def user(self, interaction: Interaction, *, user : str):
-        await interaction.response.defer(with_message=True,ephemeral=True)
+        await interaction.response.defer(with_message=True,ephemeral=False)
         await interaction.followup.send(embed = ap.get_user(user))
 
 
