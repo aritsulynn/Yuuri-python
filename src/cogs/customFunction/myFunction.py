@@ -1,4 +1,3 @@
-import time
 import nextcord
 
 def embed_msg(desc):

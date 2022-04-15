@@ -1,3 +1,4 @@
+import aiosqlite
 from nextcord import Intents
 from nextcord.ext import commands
 import os
@@ -16,6 +17,14 @@ async def on_ready():
     print(f'We have logged in as {client.user}')
     game = nextcord.Game(name="@Ritsu#1667")
     await client.change_presence(status=nextcord.Status.idle, activity=game)
+
+    # import database
+    # async with aiosqlite.connect('main.db') as db:
+    #     async with db.cursor() as cursor:
+    #         await cursor.execute('CREATE TABLE IF NOT EXISTS channelId (guildid INTEGER, channelid INTEGER)')
+    #     await db.commit()
+    #     print(f"Database is ready!")
+
 
 # @client.event
 # async def on_message(message):
@@ -53,7 +62,7 @@ async def reload(ctx, extension):
     await ctx.send(f"Reloaded {extension}")
     print(f"Reloaded {extension}")
 
-# keepAlive()
 
+# keepAlive()
 
 client.run(os.environ.get('TOKEN'))

@@ -1,7 +1,7 @@
 import nextcord
 import anipie
 
-color = 0xFFA500
+color = 0x4298b5
 
 
 def get_anime(search):
@@ -23,7 +23,7 @@ def get_anime(search):
         if len(description) > 800:
             description = description[:800] + "..."
 
-        em = nextcord.Embed(title=f"{title_english} : ({url})",color=0x00ff00)
+        em = nextcord.Embed(title=f"{title_english} : ({url})",color=color)
         em.add_field(name="Romaji Title", value= title_romaji, inline=True)
         em.add_field(name="Episodes", value= episodes, inline=True)
         em.add_field(name="Average Score", value=averageScore, inline=True)
