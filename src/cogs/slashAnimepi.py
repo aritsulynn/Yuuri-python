@@ -18,14 +18,11 @@ class slashAnipi(commands.Cog):
     async def manga(self, interaction: Interaction, *, manga : str):
         await interaction.response.defer(with_message=True,ephemeral=False)
         await interaction.followup.send(embed = ap.get_manga(manga))
-                    
 
     @nextcord.slash_command(name="user", description="Get user info from AniList")
     async def user(self, interaction: Interaction, *, user : str):
         await interaction.response.defer(with_message=True,ephemeral=False)
         await interaction.followup.send(embed = ap.get_user(user))
-        
-
 
 def setup(bot):
     bot.add_cog(slashAnipi(bot))

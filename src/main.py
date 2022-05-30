@@ -1,4 +1,3 @@
-import aiosqlite
 from nextcord import Intents
 from nextcord.ext import commands
 import os
@@ -15,21 +14,13 @@ client = commands.Bot(command_prefix="+", intents=Intents, help_command=None)
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
-    game = nextcord.Game(name="@Ritsu#1667")
-    await client.change_presence(status=nextcord.Status.idle, activity=game)
-
-    # import database
-    # async with aiosqlite.connect('main.db') as db:
-    #     async with db.cursor() as cursor:
-    #         await cursor.execute('CREATE TABLE IF NOT EXISTS channelId (guildid INTEGER, channelid INTEGER)')
-    #     await db.commit()
-    #     print(f"Database is ready!")
+    await client.change_presence(status=nextcord.Status.idle, activity=nextcord.Game(name="@Aritsu#1667"))
 
 
-# @client.event
-# async def on_message(message):
-#     if message.author == client.user:
-#         return
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
 
 #     if message.content.startswith('$hello'):
 #         await message.channel.send('Hello!')
