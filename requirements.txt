@@ -1,4 +1,4 @@
-nextcord==2.0.0a9
-python-dotenv==0.19.2
+nextcord==2.0.0
+python-dotenv==0.20.0
 anipie==0.0.2
 git+https://github.com/PythonistaGuild/Wavelink.git
