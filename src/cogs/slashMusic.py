@@ -63,6 +63,7 @@ class slashMusic(commands.Cog):
         try:
             await self.bot.wait_for("wavelink_track_start", check=check, timeout=60)  # waits for 'on_wavelink_track_start'
         except asyncio.TimeoutError:  # bot didn't play any tracks for 15 minutes
+            await interaction.delete_original_message(delay=0)
             await player.disconnect()
 
     # play 

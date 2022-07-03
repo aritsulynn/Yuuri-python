@@ -22,8 +22,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+    # if message.content.startswith('$hello'):
+        # await message.channel.send('Hello!')
 
 for fn in os.listdir("./src/cogs"):
 # for fn in os.listdir("./cogs"): # ubuntu
