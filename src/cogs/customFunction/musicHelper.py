@@ -23,6 +23,6 @@ def queue_list(song_name):
 
 
 def embed_msg(description):
-    em = nextcord.Embed(title="Ritsu Helper:)", color=color, timestamp=datetime.now(), description=description)
+    em = nextcord.Embed(title="aritsuHelper:)", color=color, timestamp=datetime.now(), description=description)
     return em
 

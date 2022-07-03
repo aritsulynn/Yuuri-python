@@ -1,7 +1,7 @@
 import nextcord
 import anipie
 
-color = 0x4298b5
+color = 0x94b542
 
 
 def get_anime(search):

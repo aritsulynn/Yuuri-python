@@ -1,9 +1,9 @@
 from nextcord import Intents
 from nextcord.ext import commands
-import os
 import nextcord
+import os
 from dotenv import load_dotenv
-from keepAlive import keepAlive
+# from keepAlive import keepAlive
 load_dotenv()
 
 
@@ -14,7 +14,7 @@ client = commands.Bot(command_prefix="+", intents=Intents, help_command=None)
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
-    await client.change_presence(status=nextcord.Status.idle, activity=nextcord.Game(name="@Aritsu#1667"))
+    await client.change_presence(status=nextcord.Status.idle, activity=nextcord.Game(name="@aritsu#1667"))
 
 
 @client.event
@@ -22,8 +22,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-#     if message.content.startswith('$hello'):
-#         await message.channel.send('Hello!')
+    if message.content.startswith('$hello'):
+        await message.channel.send('Hello!')
 
 for fn in os.listdir("./src/cogs"):
 # for fn in os.listdir("./cogs"): # ubuntu
@@ -55,5 +55,4 @@ async def reload(ctx, extension):
 
 
 # keepAlive()
-
 client.run(os.environ.get('TOKEN'))

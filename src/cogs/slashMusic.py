@@ -1,3 +1,4 @@
+from discord import SlashOption
 import nextcord
 import wavelink
 from nextcord.abc import GuildChannel
@@ -6,7 +7,7 @@ from wavelink.ext import spotify
 import os
 import yarl
 from nextcord import Interaction
-
+import asyncio
 from cogs.customFunction import musicHelper as mHelper
 
 spotifyClient = os.getenv("spotifyClient")
@@ -35,16 +36,8 @@ class slashMusic(commands.Cog):
                                             host='kartadharta.xyz',
                                             port=3000,
                                             password="kdlavalink",
-                                            identifier='destinyX',
+                                            identifier='Wavelink',
                                             spotify_client=spotify.SpotifyClient(client_id=spotifyClient, client_secret=spotifySecret))
-        
-        # await wavelink.NodePool.create_node(bot=self.bot,
-        #                                     host="127.0.0.1",
-        #                                     port=2333,
-        #                                     password="destinyX",
-        #                                     identifier='destinyXlocal',
-        #                                     spotify_client=spotify.SpotifyClient(client_id=spotifyClient, client_secret=spotifySecret))
-
 
     @commands.Cog.listener()
     async def on_wavelink_node_ready(self, node: wavelink.Node):
@@ -53,18 +46,28 @@ class slashMusic(commands.Cog):
 
     # on wavelink track end play next track
     @commands.Cog.listener()
-    async def on_wavelink_track_end(self, player: wavelink.Player, track: wavelink.Track, reason):
+    async def on_wavelink_track_end(self, player: wavelink.Player, track: wavelink.Track, reason: str):
         """Event fired when a track ends."""
+
         interaction = player.interaction
+        # vc: player = interaction.guild.voice_client
+
         if not player.queue.is_empty:
             next_song = player.queue.get()
             await player.play(next_song)
-            await interaction.followup.send(embed=mHelper.controller(next_song.title, mHelper.convert_time(next_song.duration), next_song.uri, next_song.thumb), delete_after=next_song.duration)
-            print(f'Track: <{track.title}> ended. Next track: <{next_song.title}>')
+            await interaction.edit_original_message(embed=mHelper.controller(next_song.title, mHelper.convert_time(next_song.duration), next_song.uri, next_song.thumb))
+            # print(f'Track: <{track.title}> ended. Next track: <{next_song.title}>')
+        
+        def check(p: wavelink.Player, t: wavelink.Track):
+            return p.guild == player.guild
+        try:
+            await self.bot.wait_for("wavelink_track_start", check=check, timeout=60)  # waits for 'on_wavelink_track_start'
+        except asyncio.TimeoutError:  # bot didn't play any tracks for 15 minutes
+            await player.disconnect()
 
     # play 
     @nextcord.slash_command(name= "play" , description="Play a song")
-    async def play(self, interaction: Interaction, *, url: str):
+    async def play(self, interaction: Interaction, *, url: str = SlashOption(name="url", description="Insert your song url or your song name to play!", required=True)):
         """Play a song from YouTube Track or Playlist."""
         await interaction.response.defer(with_message=True)
         try:
@@ -128,8 +131,8 @@ class slashMusic(commands.Cog):
         if not vc.is_playing():
             track = await vc.play(vc.queue.get())
             await interaction.followup.send(embed=mHelper.controller(track.title, mHelper.convert_time(track.duration), track.uri, track.thumb))
-        
-        vc.interaction = interaction
+            vc.interaction = interaction
+
         # vc.user = interaction.user
 
     # skip
@@ -190,7 +193,7 @@ class slashMusic(commands.Cog):
 
     # volume
     @nextcord.slash_command(name= "volume" , description="Change the volume")
-    async def volume(self, interaction: Interaction, *, volume: int):
+    async def volume(self, interaction: Interaction, *, volume: int = SlashOption(name="volume", description="Insert your volume here!", required=True)):
         """Set the volume of the player."""
         vc: wavelink.Player = interaction.guild.voice_client
         if not vc:
@@ -268,6 +271,7 @@ class slashMusic(commands.Cog):
         if not vc.is_playing():
             await interaction.response.send_message(embed = mHelper.embed_msg("Nothing is playing."), delete_after=10)
             return
+        vc.queue.clear()
         await vc.stop()
         await interaction.response.send_message(embed = mHelper.embed_msg("Stopped the song."), delete_after=10)
     
