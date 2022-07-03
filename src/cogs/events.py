@@ -9,14 +9,16 @@ class events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        channel = member.guild.system_channel
+
         embed = nextcord.Embed(
             title="Welcome to the server!",
             description=f"{member.mention}",
-            color='#fff',
-            thumbnail=member.avatar_url,
+            color=0xFFA500,
             timestamp=datetime.now()
         )
-        await member.send(embed = embed)
+        embed.set_thumbnail(url=member.avatar.url)
+        await channel.send(embed = embed)
 
 
 def setup(bot):
