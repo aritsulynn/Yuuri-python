@@ -104,7 +104,7 @@ class slashMusic(commands.Cog):
                     await interaction.followup.send(embed=mHelper.controller(track.title, mHelper.convert_time(track.duration), track.uri, track.thumb))
                 else:
                     await vc.queue.put_wait(track)
-                print(f'Track: <{track.title}> added to queue.')
+                # print(f'Track: <{track.title}> added to queue.')
         # check youtube uri
         else:
             # check playlist or not
@@ -140,6 +140,9 @@ class slashMusic(commands.Cog):
             return
         if not vc.is_playing():
             await interaction.response.send_message(embed=mHelper.embed_msg("Nothing is playing."), delete_after=10)
+            return
+        if vc.queue.is_empty():
+            await interaction.response.send_message(embed=mHelper.embed_msg("Queue is empty."), delete_after=10)
             return
         await vc.stop()
         await interaction.response.send_message(embed=mHelper.embed_msg("Skipped the song."), delete_after=10)
