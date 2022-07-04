@@ -39,30 +39,28 @@ class slashMusic(commands.Cog):
                                             identifier='Wavelink',
                                             spotify_client=spotify.SpotifyClient(client_id=spotifyClient, client_secret=spotifySecret))
 
+    # on start the bot will connect to the nodes
     @commands.Cog.listener()
     async def on_wavelink_node_ready(self, node: wavelink.Node):
         """Event fired when a node has finished connecting."""
         print(f'Node: <{node.identifier}> is ready!')
 
-    # on wavelink track end play next track
+    # if song end 
     @commands.Cog.listener()
     async def on_wavelink_track_end(self, player: wavelink.Player, track: wavelink.Track, reason: str):
         """Event fired when a track ends."""
-
         interaction = player.interaction
-        # vc: player = interaction.guild.voice_client
 
         if not player.queue.is_empty:
             next_song = player.queue.get()
             await player.play(next_song)
             await interaction.edit_original_message(embed=mHelper.controller(next_song.title, mHelper.convert_time(next_song.duration), next_song.uri, next_song.thumb))
-            # print(f'Track: <{track.title}> ended. Next track: <{next_song.title}>')
         
-        def check(p: wavelink.Player, t: wavelink.Track):
+        def check(p: wavelink.Player):
             return p.guild == player.guild
         try:
             await self.bot.wait_for("wavelink_track_start", check=check, timeout=60)  # waits for 'on_wavelink_track_start'
-        except asyncio.TimeoutError:  # bot didn't play any tracks for 15 minutes
+        except asyncio.TimeoutError:  # bot didn't play any tracks for 1 minutes
             await interaction.delete_original_message(delay=0)
             await player.disconnect()
 
@@ -71,6 +69,7 @@ class slashMusic(commands.Cog):
     async def play(self, interaction: Interaction, *, url: str = SlashOption(name="url", description="Insert your song url or your song name to play!", required=True)):
         """Play a song from YouTube Track or Playlist."""
         await interaction.response.defer(with_message=True)
+
         try:
             # if bot is not in a voice channel
             if not interaction.guild.voice_client:
@@ -83,23 +82,19 @@ class slashMusic(commands.Cog):
             return
             
         decoded = spotify.decode_url(url)
-        # check spotify track
+        # check it's a spotify track
         if decoded and decoded['type'] is spotify.SpotifySearchType.track:
             track = await spotify.SpotifyTrack.search(query=url, return_first=True)
             await vc.queue.put_wait(track)
-            print(f'Track: <{track.title}> added to queue.')
             
-        # check spotify playlist
+        # check it's a spotify playlist
         elif decoded and decoded['type'] is spotify.SpotifySearchType.playlist:
-            # await interaction.response.send_message(embed = mf.embed_msg("Spotify Playlist is Slow For Searching."), delete_after=10)
             async for track in spotify.SpotifyTrack.iterator(query=url, type=spotify.SpotifySearchType.playlist):
                 if not vc.is_playing():
                     await vc.play(track)
                     await interaction.followup.send(embed=mHelper.controller(track.title, mHelper.convert_time(track.duration), track.uri, track.thumb))
                 else:
                     await vc.queue.put_wait(track)
-                print(f'Track: <{track.title}> added to queue.')
-        
 
         # check spotify album
         elif decoded and decoded['type'] is spotify.SpotifySearchType.album:
@@ -120,12 +115,11 @@ class slashMusic(commands.Cog):
                     vc.queue.put(song)
                     print(song.title)
                 if vc.is_playing():
-                    # sebd message len playlist 
                     await interaction.followup.send(embed = mHelper.embed_msg(f"Added {len(playlist.tracks)} songs to queue."), delete_after=10)
             else:
                 track = await wavelink.YouTubeTrack.search(query=url, return_first=True)
                 vc.queue.put(track)
-                print(track.title)  # debug
+                # print(track.title)
                 if vc.is_playing():
                     await interaction.followup.send(embed=mHelper.embed_msg(f"Add {track.title} to the queue."), delete_after=10)
         
@@ -275,12 +269,6 @@ class slashMusic(commands.Cog):
         vc.queue.clear()
         await vc.stop()
         await interaction.response.send_message(embed = mHelper.embed_msg("Stopped the song."), delete_after=10)
-    
-
-    @commands.Cog.listener()
-    async def on_voice_state_update(self, member, before, after):
-        pass
-
 
 
 def setup(bot: commands.Bot):

@@ -3,7 +3,7 @@ from nextcord.ext import commands
 import nextcord
 import os
 from dotenv import load_dotenv
-# from keepAlive import keepAlive
+from keepAlive import keepAlive
 load_dotenv()
 
 
@@ -55,4 +55,7 @@ async def reload(ctx, extension):
 
 
 # keepAlive()
-client.run(os.environ.get('TOKEN'))
+try:
+  client.run(os.environ.get('TOKEN'))
+except:
+  os.system("kill 1")
