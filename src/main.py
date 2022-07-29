@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from keepAlive import keepAlive
 load_dotenv()
 
-
 Intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix="+", intents=Intents, help_command=None)
 
@@ -55,7 +54,7 @@ async def reload(ctx, extension):
 
 
 # keepAlive()
-try:
-  client.run(os.environ.get('TOKEN'))
-except:
-  os.system("kill 1")
+# try:
+client.run(os.environ.get('TOKEN'))
+# except:
+#   os.system("kill 1")
