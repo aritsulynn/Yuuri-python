@@ -28,7 +28,8 @@ class slashCommands(commands.Cog):
         lists = []
         count = 0
         if self.bot.is_ready():
-            channel = self.bot.get_channel(1002559144999538748)
+            channel = self.bot.get_channel(1003392829776728227)
+            # channel = self.bot.get_channel(1002559144999538748)
             # await channel.send(updateanime.get_update())
             if updateanime.check_update_or_not() == True:
                 await channel.send("https://i.imgur.com/Q4xuDua.png")
@@ -36,7 +37,6 @@ class slashCommands(commands.Cog):
                     count += 1
                     lists.append(f"{count}. `{i}`" )
                 await channel.send(''.join(lists))
-                updateanime.update_last_update()
 
 def setup(bot):
     bot.add_cog(slashCommands(bot))

@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 from os.path import exists as file_exists
@@ -12,32 +13,30 @@ def get_data():
         name_list.append(soup.text + "\n")
     return name_list
 
-
             
 # one time code
 def write_data(name_list):
 
     if not file_exists("data.txt") and not file_exists("last_anime_name.txt"):
-        with (open("data.txt", "w", encoding="utf-8") as new_data,
-             open("last_anime_name.txt", "w", encoding="utf-8") as old_data):
+        with open("data.txt", "w", encoding="utf-8") as new_data:
                 new_data.write(''.join(name_list))
-                old_data.write(name_list[0])
-                
                 new_data.close()
+        with open("last_anime_name.txt", "w", encoding="utf-8") as old_data:
+                old_data.write(name_list[0])
                 old_data.close()
                 
-                print("[One-time]Data written to file")
+        print("[One-time]Data written to file")
 
     elif (file_exists("last_anime_name.txt") and ("data.txt") ):
         # check last anime name
         with open("last_anime_name.txt", "r+", encoding="utf-8") as old_data:
-            last_anime_name = old_data.readline()  
-            old_data.write(name_list[0])
-            old_data.close()
+                last_anime_name = old_data.readline()  
+                old_data.write(name_list[0])
+                old_data.close()
 
         with open("data.txt", "w", encoding="utf-8") as f:
                 for i in name_list:
-                    if i != last_anime_name:
+                    if i.split("\n")[0] != last_anime_name.split("\n")[0]:
                         f.write(i.split("\n")[0] + "\n")
                     else: 
                         break
@@ -48,7 +47,9 @@ def write_data(name_list):
         with open("last_anime_name.txt", "w", encoding="utf-8") as f:
             f.write(name_list[0])
             f.close()
-
+    else:
+        print("Error")
+        pass
 
 def check_update_or_not():
     if file_exists("last_anime_name.txt") and file_exists("data.txt"):
@@ -60,12 +61,19 @@ def check_update_or_not():
             f.close()
         if last_anime_name.split("\n")[0] != data[0].split("\n")[0]:
             write_data(get_data())
+            print("Updated")
             return True
         else:
+            time = datetime.now().strftime("%H:%M:%S")
+            print(f"{time} has no update" )
             return False
-    elif not file_exists("last_anime_name.txt") and not file_exists("data.txt"):
+    elif not file_exists("last_anime_name.txt") or not file_exists("data.txt"):
+        print("File does not exist and already created new file")
         write_data(get_data())
-        return False
+        return True
+    else:
+        print("Error and passing it.")
+        pass
 
 def send_update():
     all_names = []
