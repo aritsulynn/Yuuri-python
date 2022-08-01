@@ -5,3 +5,6 @@ __pycache__
 geckodriver.log
 run.sh
 .replit
+
+data.txt
+last_anime_name.txt
