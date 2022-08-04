@@ -18,8 +18,8 @@ def get_data():
 def write_test(dataAnimeAll):
     
     try:
-        with (open('anime/data.txt', 'w', encoding="utf-8") as data,
-         open('anime/name_checking.txt', 'r+', encoding="utf-8") as name_checking):
+        with (open('temp/data.txt', 'w', encoding="utf-8") as data,
+         open('temp/name_checking.txt', 'r+', encoding="utf-8") as name_checking):
         # check last anime name
             anime_name = name_checking.readline()
             # print(anime_name.split('/n')[0] == dataAnimeAll[0].split('/n')[0])
@@ -40,7 +40,7 @@ def write_test(dataAnimeAll):
 
     except IOError:
         # One-time
-        with open('anime/data.txt', 'w', encoding="utf-8") as data, open('anime/name_checking.txt', 'w', encoding="utf-8") as name_checking:
+        with open('temp/data.txt', 'w', encoding="utf-8") as data, open('temp/name_checking.txt', 'w', encoding="utf-8") as name_checking:
             data.write(''.join(dataAnimeAll))
             name_checking.write(dataAnimeAll[0])
 
@@ -50,7 +50,7 @@ def write_test(dataAnimeAll):
 
 def check_update_or_not():
     try:
-        with open("anime/name_checking.txt", "r", encoding="utf-8") as f:
+        with open("temp/name_checking.txt", "r", encoding="utf-8") as f:
             last_anime_name = f.readline()
             # print(get_data()[0].split('\n')[0] == last_anime_name.split('\n')[0])
             if last_anime_name.split('\n')[0] != get_data()[0].split('\n')[0]:
@@ -65,7 +65,7 @@ def check_update_or_not():
 
 def send_update():
     all_names = []
-    with open("anime/data.txt", "r", encoding="utf-8") as f:
+    with open("temp/data.txt", "r", encoding="utf-8") as f:
         for i in f.readlines():
             all_names.append(i)
         f.close()
