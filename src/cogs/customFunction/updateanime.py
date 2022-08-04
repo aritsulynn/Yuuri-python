@@ -52,7 +52,7 @@ def check_update_or_not():
     try:
         with open("anime/name_checking.txt", "r", encoding="utf-8") as f:
             last_anime_name = f.readline()
-            print(get_data()[0].split('\n')[0] == last_anime_name.split('\n')[0])
+            # print(get_data()[0].split('\n')[0] == last_anime_name.split('\n')[0])
             if last_anime_name.split('\n')[0] != get_data()[0].split('\n')[0]:
                 print("Updated!")
                 write_test(get_data())
