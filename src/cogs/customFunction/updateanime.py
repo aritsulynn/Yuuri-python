@@ -6,36 +6,25 @@ from os.path import exists as file_exists
 # prototype code
 
 def get_data():
-    data = requests.get('https://www.animenewsnetwork.com/encyclopedia/reports.xml?id=148&nlist=15')
-    soup = BeautifulSoup(data.text , "html.parser")
-    name_list = []
+    responses = requests.get('https://www.animenewsnetwork.com/encyclopedia/reports.xml?id=148&nlist=15')
+    soup = BeautifulSoup(responses.text , "html.parser")
+    dataAnimeAll = []
     for soup in soup.find_all('anime'):
-        name_list.append(soup.text + "\n")
-    return name_list
+        dataAnimeAll.append(soup.text + "\n")
+    return dataAnimeAll
 
-            
 # one time code
-def write_data(name_list):
+def write_data(dataAnimeAll):
 
-    if not file_exists("data.txt") and not file_exists("last_anime_name.txt"):
-        with open("data.txt", "w", encoding="utf-8") as new_data:
-                new_data.write(''.join(name_list))
-                new_data.close()
-        with open("last_anime_name.txt", "w", encoding="utf-8") as old_data:
-                old_data.write(name_list[0])
-                old_data.close()
-                
-        print("[One-time]Data written to file")
-
-    elif (file_exists("last_anime_name.txt") and ("data.txt") ):
+    if file_exists("last_anime_name.txt") and ("data.txt"):
         # check last anime name
         with open("last_anime_name.txt", "r+", encoding="utf-8") as old_data:
                 last_anime_name = old_data.readline()  
-                old_data.write(name_list[0])
+                old_data.write(dataAnimeAll[0])
                 old_data.close()
 
         with open("data.txt", "w", encoding="utf-8") as f:
-                for i in name_list:
+                for i in dataAnimeAll:
                     if i.split("\n")[0] != last_anime_name.split("\n")[0]:
                         f.write(i.split("\n")[0] + "\n")
                     else: 
@@ -43,13 +32,20 @@ def write_data(name_list):
         f.close()
         print("Data updated")
 
-        # update last anime name
+    elif not file_exists("last_anime_name.txt") or not file_exists("data.txt"):
+        with open("data.txt", "w", encoding="utf-8") as new_data:
+                new_data.write(''.join(dataAnimeAll))
+                new_data.close()
+        with open("last_anime_name.txt", "w", encoding="utf-8") as old_data:
+                old_data.write(dataAnimeAll[0])
+                old_data.close()
+                
+        print("[One-time]Data written to file")
+
+    # update last anime name
         with open("last_anime_name.txt", "w", encoding="utf-8") as f:
-            f.write(name_list[0])
+            f.write(dataAnimeAll[0])
             f.close()
-    else:
-        print("Error")
-        pass
 
 def check_update_or_not():
     if file_exists("last_anime_name.txt") and file_exists("data.txt"):
@@ -67,13 +63,10 @@ def check_update_or_not():
             time = datetime.now().strftime("%H:%M:%S")
             print(f"{time} has no update" )
             return False
-    elif not file_exists("last_anime_name.txt") or not file_exists("data.txt"):
+    else:
         print("File does not exist and already created new file")
         write_data(get_data())
         return True
-    else:
-        print("Error and passing it.")
-        pass
 
 def send_update():
     all_names = []
@@ -83,5 +76,38 @@ def send_update():
         f.close()
     return all_names
 
-# write_data(get_data())
-# print(send_update())
+
+# def write_test(dataAnimeAll):
+
+#         with open("last_anime_name.txt", "r+", encoding="utf-8") as old_data:
+#             with open("data.txt", "w", encoding="utf-8") as f:
+        
+#     if file_exists("last_anime_name.txt") and ("data.txt"):
+#         # check last anime name
+#                 last_anime_name = old_data.readline()  
+#                 old_data.write(dataAnimeAll[0])
+#                 old_data.close()
+
+#                 for i in dataAnimeAll:
+#                     if i.split("\n")[0] != last_anime_name.split("\n")[0]:
+#                         f.write(i.split("\n")[0] + "\n")
+#                     else: 
+#                         break
+#         f.close()
+#         print("Data updated")
+
+#     elif not file_exists("last_anime_name.txt") or not file_exists("data.txt"):
+#         with open("data.txt", "w", encoding="utf-8") as new_data:
+#                 new_data.write(''.join(dataAnimeAll))
+#                 new_data.close()
+#         with open("last_anime_name.txt", "w", encoding="utf-8") as old_data:
+#                 old_data.write(dataAnimeAll[0])
+#                 old_data.close()
+                
+#         print("[One-time]Data written to file")
+
+#     # update last anime name
+#         with open("last_anime_name.txt", "w", encoding="utf-8") as f:
+#             f.write(dataAnimeAll[0])
+#             f.close()
+    

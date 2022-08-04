@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+nextcord = "==2.0.0"
+python-dotenv = "==0.20.0"
+anipie = "==0.0.2"
+beautifulsoup4 = "==4.11.1"
+flask = "*"
+wavelink = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
