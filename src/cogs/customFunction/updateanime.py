@@ -76,38 +76,3 @@ def send_update():
         f.close()
     return all_names
 
-
-# def write_test(dataAnimeAll):
-
-#         with open("last_anime_name.txt", "r+", encoding="utf-8") as old_data:
-#             with open("data.txt", "w", encoding="utf-8") as f:
-        
-#     if file_exists("last_anime_name.txt") and ("data.txt"):
-#         # check last anime name
-#                 last_anime_name = old_data.readline()  
-#                 old_data.write(dataAnimeAll[0])
-#                 old_data.close()
-
-#                 for i in dataAnimeAll:
-#                     if i.split("\n")[0] != last_anime_name.split("\n")[0]:
-#                         f.write(i.split("\n")[0] + "\n")
-#                     else: 
-#                         break
-#         f.close()
-#         print("Data updated")
-
-#     elif not file_exists("last_anime_name.txt") or not file_exists("data.txt"):
-#         with open("data.txt", "w", encoding="utf-8") as new_data:
-#                 new_data.write(''.join(dataAnimeAll))
-#                 new_data.close()
-#         with open("last_anime_name.txt", "w", encoding="utf-8") as old_data:
-#                 old_data.write(dataAnimeAll[0])
-#                 old_data.close()
-                
-#         print("[One-time]Data written to file")
-
-#     # update last anime name
-#         with open("last_anime_name.txt", "w", encoding="utf-8") as f:
-#             f.write(dataAnimeAll[0])
-#             f.close()
-    
