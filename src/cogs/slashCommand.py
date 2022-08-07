@@ -20,18 +20,18 @@ class slashCommands(commands.Cog):
 
     @tasks.loop(minutes=1.0)
     async def run_task(self):
-        lists = []
-        count = 0
+        # lists = []
+        # count = 0
         if self.bot.is_ready():
             channel = self.bot.get_channel(1002559144999538748)
             # coverImage = await channel.fetch_message()
             # message = await channel.fetch_message()
             if updateanime.check_update_or_not() == True:
-                await channel.send("https://i.imgur.com/Q4xuDua.png")
+                # await channel.send("https://i.imgur.com/Q4xuDua.png")
                 for i in updateanime.send_update():
-                    count += 1
-                    lists.append(f"{count}. `{i}`" )
-                await channel.send(''.join(lists))
+                    # count += 1
+                    # lists.append(f"{count}. `{i}`" )
+                    await channel.send("[ANIME NEWS] "+ i)
 
 
 def setup(bot):

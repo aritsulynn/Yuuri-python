@@ -1,5 +1,4 @@
 from datetime import datetime
-from tabnanny import check
 import requests
 from bs4 import BeautifulSoup
 from os.path import exists as file_exists
@@ -58,7 +57,7 @@ def check_update_or_not():
                 write_test(get_data())
                 return True
             else:
-                print("No update found!")
+                print("No update found!" + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                 return False
     except IOError:
         write_test(get_data())
