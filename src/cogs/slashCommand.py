@@ -31,7 +31,7 @@ class slashCommands(commands.Cog):
                 for i in updateanime.send_update():
                     # count += 1
                     # lists.append(f"{count}. `{i}`" )
-                    await channel.send("[ANIME NEWS] "+ i)
+                    await channel.send(f"[ANIME NEWS] `{i}`")
 
 
 def setup(bot):
