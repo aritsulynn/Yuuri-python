@@ -33,6 +33,13 @@ class slashCommands(commands.Cog):
                     # lists.append(f"{count}. `{i}`" )
                     await channel.send(f"[ANIME NEWS] `{i}`")
 
+    @nextcord.slash_command(name="CAU", description="Check Anime Update")
+    async def check_anime_update(self, interaction: Interaction):
+        await interaction.response.defer(with_message=True,ephemeral=False)
+        if updateanime.check_update_or_not() == True:
+            await interaction.followup.send("There is new anime update.")
+        else:
+            await interaction.followup.send("There is no new anime update.")
 
 def setup(bot):
     bot.add_cog(slashCommands(bot))
