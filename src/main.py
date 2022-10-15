@@ -6,8 +6,10 @@ from dotenv import load_dotenv
 from keepAlive import keepAlive
 load_dotenv()
 
-Intents = nextcord.Intents.all()
-client = commands.Bot(command_prefix="+", intents=Intents, help_command=None)
+intents = nextcord.Intents.default()
+intents.message_content = True
+
+client = commands.Bot(command_prefix="+", intents=intents, help_command=None)
 
 
 @client.event
@@ -20,9 +22,6 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-
-    # if message.content.startswith('$hello'):
-        # await message.channel.send('Hello!')
 
 for fn in os.listdir("./src/cogs"):
 # for fn in os.listdir("./cogs"): # ubuntu
