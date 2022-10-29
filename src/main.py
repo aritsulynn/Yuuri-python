@@ -1,3 +1,4 @@
+from prettytable import PrettyTable
 from nextcord import Intents
 from nextcord.ext import commands
 import nextcord
@@ -23,11 +24,14 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+table =  PrettyTable(["Name", "Status"])
 for fn in os.listdir("./src/cogs"):
 # for fn in os.listdir("./cogs"): # ubuntu
     if fn.endswith(".py"):
         client.load_extension(f"cogs.{fn[:-3]}")
-        print("Load :" + fn)
+        # print("Load :" + fn)
+        table.add_row([f"cogs.{fn[:-3]}", "Loaded"])
+print(table)
 
 @client.command(name="load")
 async def load(ctx, extension):
@@ -35,7 +39,6 @@ async def load(ctx, extension):
     client.load_extension(f"cogs.{extension}")
     await ctx.send(f"Loaded {extension}")
     print(f"Loaded {extension}")
-
 
 @client.command(name="unload", aliases=["ul"])
 async def unload(ctx, extension):
