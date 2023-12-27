@@ -36,6 +36,18 @@ class song(commands.Cog):
         print(f"Node {payload.node!r} is ready!")
 
     @commands.Cog.listener()
+    async def on_wavelink_track_exception(self, payload: wavelink.TrackExceptionEventPayload):
+        print(f"Track {payload.track!r} encountered an exception: {payload.exception}")
+
+    @commands.Cog.listener()
+    async def on_wavelink_track_stuck(self, payload: wavelink.TrackStuckEventPayload):
+        print(f"Track {payload.track!r} got stuck")
+
+    @commands.Cog.listener()
+    async def on_wavelink_node_closed(self, node: wavelink.Node, disconnected: list[wavelink.Player]):
+        print(f"Node {node!r} has closed")
+
+    @commands.Cog.listener()
     async def on_wavelink_track_start(self, payload: wavelink.TrackStartEventPayload) -> None:
         player: wavelink.Player | None = payload.player
         if not player:
@@ -82,14 +94,11 @@ class song(commands.Cog):
     @app_commands.command(name="play", description="play a song")
     async def play(self, interaction: discord.Interaction, *, query: str):
         """Play a song with a given query or URL."""
-        print("playing: ", query)
         if not interaction.guild:
             return
         
         player: wavelink.Player 
         player = cast(wavelink.Player, interaction.guild.voice_client)
-        
-        print("player: ", player)
 
         if not player:
             try:
@@ -100,8 +109,8 @@ class song(commands.Cog):
             except discord.ClientException:
                 await interaction.followup.send("I was unable to join this voice channel. Please try again.")
                 return
-            
-        await interaction.response.send_message("Thinking...")
+        
+        # await interaction.response.send_message(f"Searching for {query}...", ephemeral=True, delete_after=10)
         # await interaction.followup.send(f"{query}")
 
         # Turn on AutoPlay to enabled mode.
@@ -114,7 +123,7 @@ class song(commands.Cog):
         if not hasattr(player, "home"):
             player.home = interaction.channel
         elif player.home != interaction.channel:
-            await interaction.response.send(f"You can only play songs in {player.home.mention}, as the player has already started there.")
+            await interaction.response.send(f"You can only play songs in {player.home.mention}, as the player has already started there.", ephemeral=True)
             return
 
         # This will handle fetching Tracks and Playlists...
@@ -125,7 +134,7 @@ class song(commands.Cog):
 
         # print("tracks: ", tracks)
         if not tracks:
-            await interaction.followup.send(f"{interaction.user.mention} - Could not find any tracks with that query. Please try again.")
+            await interaction.followup.send(f"{interaction.user.mention} - Could not find any tracks with that query. Please try again.", ephemeral=True)
             return
 
         if isinstance(tracks, wavelink.Playlist):
@@ -135,7 +144,8 @@ class song(commands.Cog):
         else:
             track: wavelink.Playable = tracks[0]
             await player.queue.put_wait(track)
-            await interaction.followup.send(f"Added **`{track}`** to the queue.")
+            if(player.playing):
+                await interaction.followup.send(f"Added **`{track}`** to the queue.")
 
         if not player.playing:
             # Play now since we aren't playing anything...
@@ -147,6 +157,7 @@ class song(commands.Cog):
         #     await interaction.followup.delete()
         # except discord.HTTPException:
         #     pass
+
 
     @app_commands.command(name="join", description="join a voice channel")
     async def join(self, interaction: discord.Interaction):
@@ -165,6 +176,7 @@ class song(commands.Cog):
         """Disconnect the Player."""
         player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
         if not player:
+            await interaction.response.send_message("Not connected.")
             return
 
         await player.disconnect()
@@ -175,6 +187,7 @@ class song(commands.Cog):
         """Pause or Resume the Player depending on its current state."""
         player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
         if not player:
+            await interaction.response.send_message("Not playing anything.")
             return
 
         await player.pause(not player.paused)
@@ -186,6 +199,7 @@ class song(commands.Cog):
         """Resume the Player."""
         player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
         if not player:
+            await interaction.response.send_message("Not playing anything.")
             return
 
         await player.pause(not player.paused)
@@ -196,6 +210,7 @@ class song(commands.Cog):
         """Skip the current song."""
         player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
         if not player:
+            await interaction.response.send_message("Not playing anything.")
             return
 
         await player.skip(force=True)
@@ -219,6 +234,7 @@ class song(commands.Cog):
         """Show the currently playing song."""
         player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
         if not player or not player.current:
+            await interaction.response.send_message("Not playing anything.")
             return
 
         track: wavelink.Playable = player.current
@@ -238,15 +254,45 @@ class song(commands.Cog):
         await player.set_volume(volume)
         await interaction.response.send_message(f"Volume set to {volume}!")
 
-    # @app_commands.command(name="shuffle", description="shuffle the queue")
-    # async def shuffle(self, interaction: discord.Interaction) -> None:
-    #     """Shuffle the current queue."""
-    #     player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
-    #     if not player:
-    #         return
+    @app_commands.command(name="shuffle", description="shuffle the queue")
+    async def shuffle(self, interaction: discord.Interaction) -> None:
+        """Shuffle the current queue."""
+        player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
+        if not player:
+            await interaction.response.send_message("Please add more songs to the queue.")
+            return
 
-    #     player.queue.shuffle()
-    #     await interaction.response.send_message("Shuffled!")
+        player.queue.shuffle()
+        await interaction.response.send_message("Shuffled!")
+
+    @app_commands.command(name="stop", description="stop the player")
+    async def stop(self, interaction: discord.Interaction) -> None:
+        """Stop the Player, and disconnect from the voice channel."""
+        player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
+        if not player:
+            await interaction.response.send_message("Not playing anything.")
+            return
+
+        await player.stop()
+        await interaction.response.send_message("Stopped!")
+
+    @app_commands.command(name="remove", description="remove a song from the queue")
+    async def remove(self, interaction: discord.Interaction, *, index: int) -> None:
+        """Remove a song from the queue."""
+        player: wavelink.Player = cast(wavelink.Player, interaction.guild.voice_client)
+        if not player:
+            await interaction.response.send_message("Please add more songs to the queue.")
+            return
+
+        try:
+            track: wavelink.Playable = player.queue[index]
+        except IndexError:
+            await interaction.response.send_message("Invalid song index.")
+            return
+
+        del player.queue[index]
+        await interaction.response.send_message(f"Removed **`{track}`** from the queue.")
+
 
 async def setup(bot):
-    await bot.add_cog(song(bot), guilds=[discord.Object(id=785708140959760414)])
+    await bot.add_cog(song(bot), guilds=[discord.Object(id=785708140959760414), discord.Object(id=858608285284302858)])
