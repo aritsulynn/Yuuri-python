@@ -45,6 +45,7 @@ async def reload(ctx, extension):
 async def setup_hook():
   """Load default cogs"""
   for filename in os.listdir('./cogs'):
+#   for filename in os.listdir('./src/cogs'):
     if filename.endswith('.py'):
         await client.load_extension(f'cogs.{filename[:-3]}')
         print(f"Loaded Cog: {filename[:-3]}")

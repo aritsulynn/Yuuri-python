@@ -6,6 +6,17 @@ import logging
 # from typing import cast
 from typing import cast
 import wavelink
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+"""
+References:
+https://github.com/PythonistaGuild/Wavelink/blob/main/examples/simple.py
+
+Thank you https://github.com/PythonistaGuild/Wavelink
+"""
+
 
 class song(commands.Cog):
 
@@ -17,7 +28,7 @@ class song(commands.Cog):
     async def on_ready(self):
         print("Wavelink Commands Ready!")
         await self.bot.wait_until_ready()
-        nodes = [wavelink.Node(uri="http://127.0.0.1:2333", password="youshallnotpass")]
+        nodes = [wavelink.Node(uri=os.environ.get("nodeURI"), password=os.environ.get("nodePWD"))]
         await wavelink.Pool.connect(nodes=nodes, client=self.bot, cache_capacity=100)
 
     @commands.Cog.listener()
