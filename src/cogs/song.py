@@ -295,4 +295,4 @@ class song(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(song(bot), guilds=[discord.Object(id=785708140959760414), discord.Object(id=858608285284302858)])
+    await bot.add_cog(song(bot), guilds=[discord.Object(id=int(i)) for i in os.getenv('guilds').split(',')])

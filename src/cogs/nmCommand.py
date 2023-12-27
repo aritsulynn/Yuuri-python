@@ -1,6 +1,9 @@
+import os
 import discord
 from discord.ext import commands
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 class nmCommand(commands.Cog):
     def __init__(self, bot):
@@ -20,4 +23,4 @@ class nmCommand(commands.Cog):
         await ctx.send(f"Synced {names}")
 
 async def setup(bot):
-    await bot.add_cog(nmCommand(bot), guilds=[discord.Object(id=785708140959760414)])
+    await bot.add_cog(nmCommand(bot), guilds=[discord.Object(id=int(i)) for i in os.getenv('guilds').split(',')])

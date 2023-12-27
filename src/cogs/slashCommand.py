@@ -1,7 +1,9 @@
+import os
 import discord 
 from discord.ext import commands
 from discord import app_commands
-
+from dotenv import load_dotenv
+load_dotenv()
 
 class slashCommand(commands.Cog):
     def __init__(self, bot):
@@ -21,4 +23,4 @@ class slashCommand(commands.Cog):
         embed = discord.Embed(title="Profile", description="This is a profile command!", color=discord.Color.random())
 
 async def setup(bot):
-    await bot.add_cog(slashCommand(bot), guilds=[discord.Object(id=785708140959760414)])
+    await bot.add_cog(slashCommand(bot), guilds=[discord.Object(id=int(i)) for i in os.getenv('guilds').split(',')])
