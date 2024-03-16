@@ -20,6 +20,8 @@ class reactionrole(commands.Cog):
         message = await self.bot.get_channel(channel_id).fetch_message(message_id)
         await message.add_reaction(emoji_to_react_with)
         print("Reaction Roles Ready!")
+        # check if bot offline and someone reacts, then add role
+
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):

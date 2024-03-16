@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from keepAlive import keepAlive
 import asyncio
-
+import platform
 load_dotenv()
 
 # intents = discord.Intents.default()
@@ -21,7 +21,6 @@ async def on_ready():
   print(f'We have logged in as {client.user}')
   await client.change_presence(status=discord.Status.idle,
                                activity=discord.Game(name="_douzo"))
-
 
 @client.command(name="load")
 async def load(ctx, extension):
@@ -50,19 +49,20 @@ async def reload(ctx, extension):
 @client.event
 async def setup_hook():
   """Load default cogs"""
-  # for filename in os.listdir('./cogs'):
-  for filename in os.listdir('./src/cogs'):
+  platform_system = os.listdir('./cogs') if platform.system() == "Windows" else os.listdir('./src/cogs')
+  for filename in platform_system:
     if filename.endswith('.py'):
       await client.load_extension(f'cogs.{filename[:-3]}')
       print(f"Loaded Cog: {filename[:-3]}")
 
 
 async def main():
-  keepAlive()
   try:
+    # keepAlive()
     await client.start(os.environ.get('TOKEN'))
   except:
-    os.system("kill 1")
+    if platform.system() == "Unix":
+      os.system("kill 1")
 
 
 asyncio.run(main())
