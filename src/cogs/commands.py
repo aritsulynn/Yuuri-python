@@ -34,7 +34,7 @@ safety_settings = [
     },
 ]
 
-model = genai.GenerativeModel("gemini-pro", safety_settings=safety_settings)
+model = genai.GenerativeModel("gemini-1.0-pro-latest", safety_settings=safety_settings)
 
 
 class nmCommand(commands.Cog):
@@ -62,11 +62,14 @@ class nmCommand(commands.Cog):
     @commands.command()
     async def ask(self, ctx, *, prompt):
         """Ask AI command!"""
-        response = model.generate_content(str(prompt))
+        response = model.generate_content(
+            str(prompt)
+            + ", Your name is Yuuri, you must answer the question with concise and clear."
+        )
         if response.parts:
-            await ctx.send(response.text)
+            await ctx.send(response.parts[0].text)
         else:
-            await ctx.send("Something went wrong!")
+            await ctx.send("No response")
 
 
 async def setup(bot):

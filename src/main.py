@@ -52,13 +52,14 @@ async def reload(ctx, extension):
 @client.event
 async def setup_hook():
     """Load default cogs"""
+    not_load_cogs = ["song.py"]
     platform_system = (
         os.listdir("./cogs")
         if platform.system() == "Windows"
         else os.listdir("./src/cogs")
     )
     for filename in platform_system:
-        if filename.endswith(".py"):
+        if filename.endswith(".py") and filename not in not_load_cogs:
             await client.load_extension(f"cogs.{filename[:-3]}")
             print(f"Loaded Cog: {filename[:-3]}")
 
