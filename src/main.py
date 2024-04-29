@@ -67,6 +67,7 @@ async def setup_hook():
 async def main():
     try:
         # keepAlive()
+        print("Bot is starting...")
         await client.start(os.environ.get("TOKEN"))
     except:
         if platform.system() == "Unix":
