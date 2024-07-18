@@ -6,3 +6,6 @@ geckodriver.log
 run.sh
 .replit
 src/env/
+src/__pycache__/
+src/.env
+env/
