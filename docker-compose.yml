@@ -1,8 +1,12 @@
-version: "3"
+version: '3.4'
+
 services:
-  web:
-    build: .
-    ports:
-      - "8080:8080"
-  redis:
-    image: "redis:alpine"
+  yuuripython:
+    image: yuuripython
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - .:/app

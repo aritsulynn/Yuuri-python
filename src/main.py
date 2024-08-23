@@ -52,7 +52,7 @@ async def reload(ctx, extension):
 @client.event
 async def setup_hook():
     """Load default cogs"""
-    not_load_cogs = ["song.py"]
+    not_load_cogs = ["song.py", "reactionrole.py"]
     platform_system = (
         os.listdir("./cogs")
         if platform.system() == "Windows"
@@ -66,10 +66,15 @@ async def setup_hook():
 
 async def main():
     try:
-        # keepAlive()
         print("Bot is starting...")
         await client.start(os.environ.get("TOKEN"))
-    except:
+    except discord.LoginFailure:
+        print("Invalid token provided.")
+    except KeyboardInterrupt:
+        print("Bot interrupted by user.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
         if platform.system() == "Unix":
             os.system("kill 1")
 
