@@ -5,3 +5,4 @@ python-dotenv==1.0.0
 # https://github.com/PythonistaGuild/Wavelink.git
 discord.py[voice]
 requests
+upstash-redis==1.2.0
