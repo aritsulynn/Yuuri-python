@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 import requests
 
 
-key = "1f95e16c-d1ff-461f-97c2-70b3cc6e6c0b"
-main_key = "55927f33-3576-4755-9eb4-5438ddf6915b"
-API_URL = f"http://host.docker.internal:5000/api/v1/prediction/{main_key}"
-
 load_dotenv()
+API_URL = (
+    "https://flowise.9lynn.com/api/v1/prediction/55927f33-3576-4755-9eb4-5438ddf6915b"
+)
+headers = {"Authorization": f"Bearer {os.getenv('BEARER_TOKEN')}"}
 
 
 class yuuAI(commands.Cog):
@@ -27,16 +27,15 @@ class yuuAI(commands.Cog):
             return
 
         def query(payload):
-            response = requests.post(API_URL, json=payload)
+            response = requests.post(API_URL, headers=headers, json=payload)
             return response.json()
 
         if (
             message.channel.id == 1223163491385344012
             or message.mentions[0] == self.bot.user
         ):
-            print("Message received 2")
             prompt = (
-                f"{message.content.split(self.bot.user.mention)[1].strip()}"
+                f"{message.content.replace(self.bot.user.mention, "").strip()}"
                 if self.bot.user in message.mentions
                 else message.content
             )
@@ -52,13 +51,17 @@ class yuuAI(commands.Cog):
                 if output is not None:
                     async with message.channel.typing():
                         try:
-                            await message.channel.send(output["text"])
+                            await message.channel.send(output.get("text"))
                         except:
                             await message.channel.send(
                                 "Something went wrong! Try again later."
                             )
                 else:
                     await message.channel.send("Something went wrong! Try again later.")
+
+    # reset chat session
+    # @commands.command()
+    # async def reset(self, ctx):
 
 
 async def setup(bot):

@@ -21,7 +21,7 @@ client = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"We have logged in as {client.user}")
     await client.change_presence(
-        status=discord.Status.idle, activity=discord.Game(name="_douzo")
+        status=discord.Status.idle, activity=discord.Game(name="made by Lynn")
     )
 
 

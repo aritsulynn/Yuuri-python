@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-
-
 class slashCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

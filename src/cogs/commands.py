@@ -1,12 +1,27 @@
 import os
+import random
 import discord
 from discord.ext import commands
 from datetime import datetime
+
+# from pymongo.mongo_client import MongoClient
+# from pymongo.server_api import ServerApi
 
 
 class nmCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        # self.client = MongoClient("your-mongodb-connection-string")
+        # self.db = self.client["mydatabase"]
+        # self.collection = self.db["mycollection"]
+        # self.client = MongoClient(os.getenv("mongodbURI"), server_api=ServerApi("1"))
+        # self.db = self.client["yuu-test"]
+        # self.collection = self.db["yuu-collection"]
+        # try:
+        #     self.client.admin.command("ping")
+        #     print("ping mongo")
+        # except Exception as e:
+        #     print("failed to ping")
 
     @commands.command()
     async def ping(self, ctx):
@@ -25,6 +40,18 @@ class nmCommand(commands.Cog):
         self.bot.tree.clear_commands(guild=ctx.guild)
         await self.bot.tree.sync()
         await ctx.send("Desynced")
+
+    @commands.command(name="random")
+    async def random(self, ctx):
+        print("random")
+        list = ["A", "B", "C"]
+        await ctx.reply(f"I choose {random.choice(list)}")
+
+    # @commands.command(name="test")
+    # async def test(self, ctx):
+    #     user_data = {"user_id": ctx.author.id, "user_name": ctx.author.name}
+    #     self.collection.insert_one(user_data)
+    #     await ctx.send(f"User {user_data} added to the database.")
 
     # @commands.command()
     # async def ask(self, ctx, *, prompt):
