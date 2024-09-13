@@ -55,7 +55,8 @@ async def setup_hook():
     not_load_cogs = ["song.py", "reactionrole.py"]
     platform_system = (
         os.listdir("./cogs")
-        if platform.system() == "Windows"
+        if platform.system() in ["Windows"]
+        # if platform.system() in ["Windows", "Linux"]
         else os.listdir("./src/cogs")
     )
     for filename in platform_system:

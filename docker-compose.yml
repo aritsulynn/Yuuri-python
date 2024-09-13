@@ -9,3 +9,9 @@ services:
     volumes:
       - .:/app
     container_name: yuuri
+    networks:
+      - public
+
+networks:
+  public:
+    external: true
