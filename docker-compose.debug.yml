@@ -2,7 +2,6 @@ version: '3.4'
 
 services:
   yuuripython:
-    image: yuuripython
     build:
       context: .
       dockerfile: ./Dockerfile

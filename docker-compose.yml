@@ -1,6 +1,6 @@
 services:
   yuuripython:
-    image: yuuripython
+    # image: yuuripython
     build:
       context: .
       dockerfile: ./Dockerfile
