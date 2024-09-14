@@ -11,6 +11,7 @@ services:
     container_name: yuuri
     networks:
       - public
+    restart: always
 
 networks:
   public:
